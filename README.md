@@ -38,5 +38,6 @@ The entire first equation gets represented as:
 
     [[[2, 1], 2], [[0, 1], 5], [[0, 0], -8]]
 
-    
+
+Some of the code is based off NZMATH, a python based number theory calculation system developed by Tokyo Metropolitan University.
 
