@@ -29,4 +29,14 @@ These equations can be transformed into residual form (i.e. subtract the left an
 
 Notice that each of these expressions are now polynomials (or rather, multinomials as they are in terms of more than one variable). 
 
+    2 x^2 y^1 - 5 x^0 y^1 - 8 x^0 y^0 = 0
+    2 x^1 y^0 + 2 x^0 y^1 - 7 x^0 y^0 = 0
+
+We'll represent these polynomials as lists of coefficients and degrees. For instance, the base `x^2 y^1` can be represented by the array `[2, 1]` (where we treat `x` as the first index, and `y` as the second index). 
+
+The entire first equation gets represented as:
+
+    [[[2, 1], 2], [[0, 1], 5], [[0, 0], -8]]
+
+    
 
