@@ -1,106 +1,18 @@
-var _ = require('lodash');
-
-function is_num(x){ return typeof x == 'number' }
-function is_poly(x){ return _.isArray(x) && _.every(x, is_term) }
-function is_term(x){ return is_num(x[1]) && is_base(x[0]) }
-function is_base(x){ return _.isArray(x) && _.every(x, is_num) }
-
-function num_add(a, b){ return a + b }
-function num_sub(a, b){ return a - b }
-function num_mul(a, b){ return a * b }
-function num_div(a, b){ return a / b }
-function num_inv(x){ return 1 / x }
-function num_one(x){ return x == 1 }
-function num_neg(x){ return -x }
-
-// Return the least common multiple.
-// lcm((i1, ..., in), (j1, ..., jn)) = (max(i1, j1), ..., max(in, jn))
-function base_lcm(a, b){
-    if(a.length != b.length) throw new TypeError("different length indices");
-    return _.zip(a, b).map(_.max)
-}
-
-function base_sub(a, b){
-    if(a.length != b.length) throw new TypeError("different length indices");
-    return _.zip(a, b).map(x => num_sub(x[0], x[1]))
-}
-
-function base_add(a, b){
-    if(a.length != b.length) throw new TypeError("different length indices");
-    return _.zip(a, b).map(x => num_add(x[0], x[1]))
-}
-
-function base_cmp(a, b){
-    for(var i = 0; i < a.length; i++){
-        if(a[i] < b[i]) return +1;
-        if(a[i] > b[i]) return -1;
-    }
-    return 0;
-}
-
-function poly_zero(poly){ return poly.length == 0 }
-function filter_zero(x){ return x.filter(k => k[1] != 0) }
-
-function scalar_mul(a, s){
-    console.assert(is_poly(a))
-    console.assert(is_num(s))
-    return filter_zero(a.map(k => [k[0], num_mul(k[1], s)]))
-}
-function term_mul(a, b){
-    console.assert(is_poly(a))
-    console.assert(is_term(b))
-    return filter_zero(a.map(k => [base_add(k[0], b[0]), num_mul(k[1], b[1])]))
-}
-
-function poly_sub(a, b){
-    console.assert(is_poly(a))
-    console.assert(is_poly(b))
-    
-    var new_poly = a.slice(0); // clone A
-    for(var i = 0; i < b.length; i++){
-        var base = b[i][0], coeff = b[i][1];
-        var index = _.findIndex(new_poly, k => _.isEqual(k[0], base))
-        if(index != -1){
-            new_poly[index][1] -= coeff
-        }else{
-            new_poly.push([base, -coeff])
-        }
-    }
-    return filter_zero(new_poly)
-}
-function poly_add(a, b){
-    console.assert(is_poly(a))
-    console.assert(is_poly(b))
-    var new_poly = a.slice(0); // clone A
-    for(var i = 0; i < b.length; i++){
-        var base = b[i][0], coeff = b[i][1];
-        var index = _.findIndex(new_poly, k => _.isEqual(k[0], base))
-        if(index != -1){
-            new_poly[index][1] += coeff
-        }else{
-            new_poly.push([base, coeff])
-        }
-    }
-    return filter_zero(new_poly)
-}
-function poly_coeff(poly, base){
-    for(var i = 0; i < poly.length; i++){
-        if(_.isEqual(poly[i][0], base)) return poly[i][1];
-    }
-    throw new Error('no coefficient for base')
-}
+var monomial = require('./monomial')
+var coefficient = require('./coefficient')
+var polynomial = require('./polynomial')
 
 
-function s_polynomial(f, g, order){
+function s_polynomial(f, g){
     // Return S-polynomial of f and g with respect to the order.
     // S(f, g) = (lc(g)*T/lb(f))*f - (lc(f)*T/lb(g))*g,
     // where T = lcm(lb(f), lb(g)).
 
-    var fl = order.leading_term(f),
-        gl = order.leading_term(g);
-    var t = base_lcm(fl[0], gl[0]);
-    return poly_sub(term_mul(f, [base_sub(t, fl[0]), gl[1]]), 
-                    term_mul(g, [base_sub(t, gl[0]), fl[1]]))
+    var fl = polynomial.leading_term(f),
+        gl = polynomial.leading_term(g);
+    var t = monomial.lcm(fl[0], gl[0]);
+    return polynomial.sub(polynomial.term_mul(f, [monomial.sub(t, fl[0]), gl[1]]), 
+                          polynomial.term_mul(g, [monomial.sub(t, gl[0]), fl[1]]))
 }
 
 
@@ -109,29 +21,29 @@ function s_polynomial(f, g, order){
 // with respect to the order, the returned polynomial is the result
 // of canceling out the term.
 
-function step_reduce(reducee, reducer, order){
-    console.assert(is_poly(reducee))
-    console.assert(is_poly(reducer))
-
-    var term = order.leading_term(reducer), // term = [base, coeff]
+function step_reduce(reducee, reducer){
+    var term = polynomial.leading_term(reducer), // term = [base, coeff]
         lb = term[0],
         lc = term[1];
     for(var i = 0; i < reducee.length; i++){
         var b = reducee[i][0],
             c = reducee[i][1];
-        if(_.isEqual(base_lcm(b, lb), b)){
-            return poly_add(reducee, term_mul(reducer, [base_sub(b, lb), num_div(num_neg(c), lc)]))
+        if(monomial.equal(monomial.lcm(b, lb), b)){
+            return polynomial.add(reducee, polynomial.term_mul(reducer, [
+                monomial.sub(b, lb), 
+                coefficient.div(coefficient.neg(c), lc)
+            ]))
         }
     }
 }
 
 // Return normalized form of f with respect to reducer, a set of
 // polynomials, and order.
-function reduce_closure(f, reducers, order){
+function reduce_closure(f, reducers){
     while(true){
         var reduced = null;
         for(var i = 0; i < reducers.length; i++){
-            reduced = step_reduce(f, reducers[i], order);
+            reduced = step_reduce(f, reducers[i]);
             if(reduced){
                 f = reduced;
                 break
@@ -145,7 +57,7 @@ function reduce_closure(f, reducers, order){
 // set of polynomials with respect to the order.
 
 // Be careful, this implementation is very naive.
-function buchberger(groebner, order){
+exports.buchberger = function buchberger(groebner){
     var pairs = []
     for(var i = 0; i < groebner.length; i++){
         for(var j = 0; j < groebner.length; j++){
@@ -158,8 +70,8 @@ function buchberger(groebner, order){
         var fg = pairs.pop(),
             f = fg[0],
             g = fg[1];
-        var h = reduce_closure(s_polynomial(f, g, order), groebner, order);
-        if(!poly_zero(h)){
+        var h = reduce_closure(s_polynomial(f, g), groebner);
+        if(!polynomial.is_zero(h)){
             for(var i = 0; i < groebner.length; i++){
                 pairs.push([groebner[i], h])
             }
@@ -176,21 +88,21 @@ function buchberger(groebner, order){
 // 1) lb(f) divides lb(g) => g is not in reduced Groebner basis
 // 2) monic
 
-function reduce_groebner(gb, order){
+exports.reduce_groebner = function reduce_groebner(gb){
     var reduced_basis = [];
     var lbc = gb
-        .map(k => [order.leading_term(k)[0], k])
-        .sort((a, b) => base_cmp(a[0], b[0]));
+        .map(k => [polynomial.leading_term(k), k])
+        .sort((a, b) => monomial.cmp(a[0], b[0]));
 
     var lbs = lbc.map(k => k[0]),
         lbr = lbc.map(k => k[1])
 
     for(var i = 0; i < lbs.length; i++){
-        var lbi = lbs[i];
+        var lbi = lbs[i][0];
         var divisor_found = false;
         for(var j = lbs.length - 1; j > i; j--){
-            var lbj = lbs[j];
-            if(_.isEqual(base_lcm(lbj, lbi), lbi)){
+            var lbj = lbs[j][0];
+            if(monomial.equal(monomial.lcm(lbj, lbi), lbi)){
                 // divisor found
                 divisor_found = true
                 break
@@ -198,10 +110,10 @@ function reduce_groebner(gb, order){
         }
         if(!divisor_found){
             var g = lbr[i];
-            var c = poly_coeff(g, lbi)
-            if(num_one(c) == false){
+            var c = lbs[i][1];
+            if(coefficient.is_one(c) == false){
                 // make it monic
-                g = scalar_mul(g, num_inv(c))
+                g = polynomial.scalar_mul(g, coefficient.inv(c))
             }
             reduced_basis.push(g)
         }
@@ -210,38 +122,3 @@ function reduce_groebner(gb, order){
 }
 
 
-
-
-// var f = [[[1, 0], 2], [[1, 1], 1]],
-//     g = [[[0, 1], -2], [[1, 1], 1]];
-
-
-// this corresponds to {1 x^2 + 5 = 0, 1 x == 0}
-var f = [[[2], 1], [[0], 5]],
-    g = [[[1], 1]];
-
-
-var lex = {
-    leading_term(poly){
-        // blah blah
-        poly.sort((a, b) => base_cmp(a[0], b[0]))
-        return poly.find(k => k[1] != 0)
-    }
-}
-
-
-function fmt(x){
-    x.sort((a, b) => base_cmp(a[0], b[0]))
-
-    return 'Poly { ' + x
-        .filter(k => k[1] != 0)
-        .map(k => '(' + k[0].join(', ') + '): ' + k[1])
-        .join(', ') + ' }'
-}
-
-
-var gb = buchberger([f, g], lex)
-gb.forEach(k => console.log('gb', fmt(k) ))
-
-var gb_red = reduce_groebner(gb, lex)
-gb_red.forEach(k => console.log('red', fmt(k) ))
