@@ -9,9 +9,8 @@ function findIndex(arr, predicate){
 }
 
 exports.leading_term = function leading_term(poly){
-    // blah blah
     poly.sort((a, b) => monomial.cmp(a[0], b[0]))
-    return poly.find(k => k[1] != 0)
+    return poly.find(k => !coefficient.is_zero(k[1]))
 }
 
 exports.is_zero = function poly_zero(poly){ 
