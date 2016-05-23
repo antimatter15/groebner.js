@@ -1,8 +1,18 @@
 # groebner.js
 
-In computer algebra, a Gröbner basis is a powerful tool for solving systems of polynomial equations. This project is not a computer algebra system (for instance, it is completely unable to do any sort of symbolic computation), but it's an implementation of one algorithm which is pretty useful.
+Groebner.js is a pure-Javascript implementation of Buchberger's algorithm for computing a Gröbner basis for a set of polynomial equations. 
 
-I don't really understand math, so probably all of this is wrong. 
+In computer algebra, a Gröbner basis is a powerful tool for solving systems of polynomial equations. 
+
+This implementation is largely based off NZMATH, a python number theory calculation system developed at Tokyo Metropolitan University.
+
+This project is not a computer algebra system (for instance, it's completely unable to do any sort of symbolic computation), but it's an implementation of one algorithm which is pretty useful.
+
+
+
+# What is a Gröbner basis?
+
+I don't really understand math, so probably all of this is wrong...
 
 You've probably seen linear systems of equations in high school algebra. They look like this
 
@@ -39,5 +49,9 @@ The entire first equation gets represented as:
     [[[2, 1], 2], [[0, 1], 5], [[0, 0], -8]]
 
 
-Some of the code is based off NZMATH, a python based number theory calculation system developed by Tokyo Metropolitan University.
+
+# Usage
+
+
+Check out `test.js`
 
