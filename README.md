@@ -6,8 +6,7 @@ In computer algebra, a Gröbner basis is a powerful tool for solving systems of 
 
 This implementation is largely based off NZMATH, a python number theory calculation system developed at Tokyo Metropolitan University.
 
-This project is not a computer algebra system (for instance, it's completely unable to do any sort of symbolic computation), but it's an implementation of one algorithm which is pretty useful.
-
+This project is not a computer algebra system (for instance, it's completely unable to do any sort of symbolic computation), but it's an implementation of one algorithm which is pretty useful. This implementation is entirely self-contained and requires no dependenceis. 
 
 
 # What is a Gröbner basis?
@@ -55,3 +54,11 @@ The entire first equation gets represented as:
 
 Check out `test.js`
 
+
+# TODO
+
+Currently it doesn't support any monomial ordering besides lexicographic
+
+Currently there are only two supported coefficient rings: float, which treats coefficients as IEEE754 Javascript floating point numbers (whose use is highly discouraged), and rational which is a teensy implementation of rational numbers.
+
+Currently it uses a very naive implementation of buchberger's algorithm. For any real system, it's probably a good idea to use something like Faugere's F4 algorithm. 
