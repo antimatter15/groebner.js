@@ -12,7 +12,7 @@ var groebner = require('./groebner')
 
 var generating = [[[[1,0,0],50],[[0,0,0],-2]],[[[2,0,0],1],[[0,1,0],-1]],[[[0,1,1],1],[[0,0,0],-1]]]
 
-var gb = groebner.buchberger(generating)
+var gb = groebner.normal_strategy(generating)
 gb.forEach(k => console.log(fmt2(k) + ' = 0' ))
 
 console.log('--------------------')
