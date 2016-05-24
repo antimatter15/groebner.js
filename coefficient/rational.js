@@ -15,6 +15,7 @@ function gcd(x, y) {
 
 function simplify_rational(x){
     var common = gcd(Math.abs(x[0]), Math.abs(x[1]));
+    if(x[1] < 0) common = -common; // ensure denominator is positive
     return [x[0]/common, x[1]/common];
 }
 
@@ -41,7 +42,7 @@ function num_div(a, b){
 function num_inv(x){ 
     x = to_rational(x)
     if(num_zero(x)) throw new Error('can not invert zero');
-    return [x[1], x[0]]
+    return simplify_rational([x[1], x[0]])
 }
 
 function num_one(x){ 
