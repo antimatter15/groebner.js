@@ -40,6 +40,7 @@ function step_reduce(reducee, reducer){
 // Return normalized form of f with respect to reducer, a set of
 // polynomials, and order.
 function reduce_closure(f, reducers){
+    // console.log('redclothes', f, reducers)
     while(true){
         var reduced = null;
         for(var i = 0; i < reducers.length; i++){
@@ -169,6 +170,7 @@ exports.normal_strategy = function normal_strategy(groebner){
             var f = groebner[i],
                 g = groebner[j],
                 h = reduce_closure(s_polynomial(f, g), groebner);
+            
             if(!polynomial.is_zero(h)){
                 var lb_h = polynomial.leading_term(h)[0]
                 var hindex = groebner.length;

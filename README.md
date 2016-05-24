@@ -52,7 +52,7 @@ The entire first equation gets represented as:
 # Usage
 
 
-Check out `test.js`
+Check out `symbolic/demo.js`
 
 
 # TODO

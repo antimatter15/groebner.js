@@ -5,21 +5,21 @@ var reduced = symbolic.reduce_basis([
     // 'y',
 
 
-    'horse - 3 * USD',
-    'cat - 2 * USD',
-    'house - 100 * USD',
-    'assets - (horse + cat + house)',
-    'assets - horse - cat - house',
-    'horse+cat+house-assets',
+    // 'horse - 3 * USD',
+    // 'cat - 2 * USD',
+    // 'house - 100 * USD',
+    // 'assets - (horse + cat + house)',
+    // 'assets - horse - cat - house',
+    // 'horse+cat+house-assets',
 
-    'cat - house',
+    // 'cat - house',
 
 
 
     // 'x^2 - 4',
-    // '1/(1/x1 + 1/x2) - xt',
+    '1/(1/x1 + 1/x2) - xt',
     // 'x1 - 64'
-    // 'x1 - x2',
+    'x1 - x2',
     // 'x2 - 7'
     // 'x + y',
     // 'x^2 + y^2 - 4'

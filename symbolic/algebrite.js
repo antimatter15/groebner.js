@@ -61,7 +61,7 @@ function generate_from_expr(expr){
         if(isinteger(exp) && A.isnegativenumber(exp)){
             return [[ 
                 [[
-                    [expr, ONE],
+                    [expr, 1],
                     [base, -int(exp)]
                 ], ONE], // coefficient
                 [[], NEGONE]
@@ -110,7 +110,7 @@ function rat2grob(x){
 
 
 function parse_polynomial(str){
-    return extract_terms(A.expand(str))
+    return extract_terms(A.parse(str))
 }
 
 exports.rat2grob = rat2grob

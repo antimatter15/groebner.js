@@ -42,6 +42,7 @@ function reduce_basis(generating){
 				var expr = bases[0],
 					degree = bases[1],
 					index = helper.find_index(expr, variables);
+				console.assert(typeof degree == 'number')
 				base[index] = degree;
 			})
 			return [base, helper.rat2grob(coeff)];
