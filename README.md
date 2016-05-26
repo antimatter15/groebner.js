@@ -11,7 +11,7 @@ This project is not a computer algebra system (for instance, it's completely una
 
 # WARNING
 
-THIS IMPLEMENTATION DOESN'T WORK YET
+THIS IMPLEMENTATION DOESN'T WORK YET. It doesn't work and I've struggled enough with it that I'm just about at the verge of giving up. 
 
 
 # What is a Gröbner basis?
