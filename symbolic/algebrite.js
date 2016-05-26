@@ -113,6 +113,17 @@ function parse_polynomial(str){
     return extract_terms(A.expand(A.simplify(str)))
 }
 
+
+function is_zero(n){
+    return A.iszero(n)
+}
+
+function is_equal(a, b){
+    return A.equal(a, b)
+}
+
+exports.is_equal = is_equal
+exports.is_zero = is_zero
 exports.rat2grob = rat2grob
 exports.grob2rat = grob2rat
 exports.find_index = find_index

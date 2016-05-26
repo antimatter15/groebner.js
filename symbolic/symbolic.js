@@ -50,12 +50,21 @@ function reduce_basis(generating){
 	})
 
 	// console.log(JSON.stringify(simple))
-	var gb = groebner.normal_strategy(simple)
+	var gb = groebner.naive_buchberger(simple)
+	// var gb = groebner.normal_strategy(simple)
+	// console.log(JSON.stringify(gb))
+	// console.log('check basis', groebner.is_groebner(gb))
+	// console.log(JSON.stringify(gb))
 	var gb_red = groebner.reduce_groebner(gb)
+	// console.log(JSON.stringify(gb))
+	// console.log('check post reduce', groebner.is_groebner(gb_red))
+	// console.log('check is reduced', groebner.is_reduced(gb_red))
+	// console.log(gb)
+	
 
 	// now that we've done the reduction, lets assemble
 	// it back into the original form
-	var reconstituted = gb_red.map(polynomial => {
+	var reconstituted = gb_red.filter(nonzero_polynomial).map(polynomial => {
 		return polynomial.map(term => {
 			var base = term[0],
 				coeff = term[1],
@@ -69,6 +78,11 @@ function reduce_basis(generating){
 	})
 
 	return reconstituted
+}
+
+function nonzero_polynomial(polynomial){
+
+	return !(polynomial.length == 1 && polynomial[0][0].length == 0 && helper.is_zero(polynomial[0][1]))
 }
 
 
@@ -86,6 +100,37 @@ function print_polynomial(polynomial){
 	}).join(' + '))
 }
 
+function is_inconsistent(basis){
+	return basis.some(terms => 
+		terms.length == 1 && 
+			terms[0][0].length == 0)
+}
+
+
+function compare_basis(a, b){
+	if(a.length != b.length) return false;
+	for(var i = 0; i < a.length; i++){
+		var pa = a[i],
+			pb = b[i];
+
+		if(pa.length != pb.length) return false;
+		for(var j = 0; j < pa.length; j++){
+			var ta = pa[j],
+				tb = pb[j];
+
+			// compare variables/monomials/expressions ta[0], tb[0]
+			if(!helper.is_equal(ta[0], tb[0])) return false;
+
+			// compare coefficients ta[1], tb[1]
+			if(!helper.is_equal(ta[1], tb[1])) return false;
+			
+		}
+	}
+	return true
+}
+
+exports.compare_basis = compare_basis
+exports.is_inconsistent = is_inconsistent
 exports.print_polynomial = print_polynomial
 exports.parse_polynomial = helper.parse_polynomial
 exports.reduce_basis = reduce_basis

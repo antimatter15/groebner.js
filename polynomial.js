@@ -94,7 +94,7 @@ function poly_sub(a, b){
         var base = b[i][0], coeff = b[i][1];
         var index = findIndex(new_poly, k => monomial.equal(k[0], base))
         if(index != -1){
-            new_poly[index][1] = coefficient.sub(new_poly[index][1], coeff)
+            new_poly[index] = [base, coefficient.sub(new_poly[index][1], coeff)]
         }else{
             new_poly.push([base, coefficient.neg(coeff)])
         }
@@ -113,7 +113,7 @@ function poly_add(a, b){
         var base = b[i][0], coeff = b[i][1];
         var index = findIndex(new_poly, k => monomial.equal(k[0], base))
         if(index != -1){
-            new_poly[index][1] = coefficient.add(new_poly[index][1], coeff)
+            new_poly[index] = [base, coefficient.add(new_poly[index][1], coeff)]
         }else{
             new_poly.push([base, coeff])
         }
