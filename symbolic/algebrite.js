@@ -110,7 +110,7 @@ function rat2grob(x){
 
 
 function parse_polynomial(str){
-    return extract_terms(A.parse(str))
+    return extract_terms(A.expand(A.simplify(str)))
 }
 
 exports.rat2grob = rat2grob

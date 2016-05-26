@@ -18,7 +18,21 @@ function mono_add(a, b){
     return zip(a, b, (x, y) => x + y)
 }
 
+
 exports.add = mono_add
+
+
+
+// Does there exist a monomial X such that XA == B?
+// >>> from sympy.polys.monomials import monomial_divides
+// >>> monomial_divides((1, 2), (3, 4))
+// True
+// >>> monomial_divides((1, 2), (0, 2))
+// False
+function mono_divides(a, b){
+    return zip(a, b, (x, y) => x <= y).every(k => k)
+}
+exports.divides = mono_divides
 
 // Compare two indices left and right and determine precedence
 function mono_cmp(a, b){
