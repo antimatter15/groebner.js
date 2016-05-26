@@ -52,7 +52,7 @@ The entire first equation gets represented as:
 # Usage
 
 
-Check out `symbolic/demo.js`
+Check out `symbolic/demo.js` for a neat demo that makes some amount of sense. 
 
 
 # TODO
@@ -61,4 +61,7 @@ Currently it doesn't support any monomial ordering besides lexicographic
 
 Currently there are only two supported coefficient rings: float, which treats coefficients as IEEE754 Javascript floating point numbers (whose use is highly discouraged), and rational which is a teensy implementation of rational numbers.
 
-Currently it uses a very naive implementation of buchberger's algorithm. For any real system, it's probably a good idea to use something like Faugere's F4 algorithm. 
+Currently the implementation isn't correct, and it's currently failing unit tests. I don't really know why. Pull requests will be most graciously accepted. 
+
+
+
