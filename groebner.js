@@ -90,7 +90,9 @@ exports.naive_buchberger = function naive_buchberger(groebner){
 // 2) monic
 
 exports.reduce_groebner = function reduce_groebner(gb){
-    return actual_reduction(pre_reduction(gb))
+    var H = pre_reduction(gb);
+    // H.forEach(k => console.log(k))
+    return actual_reduction(H)
 }
 
 

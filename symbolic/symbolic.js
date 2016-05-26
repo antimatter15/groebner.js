@@ -49,15 +49,6 @@ function reduce_basis(generating){
 		})
 	})
 
-
-	// simple.forEach(polynomial => {
-	// 	console.log('multivar.BasicPolynomial({' + polynomial.map(term => {
-	// 		var base = term[0],
-	// 			coeff = term[1];
-	// 		return '(' + base.join(',') + '): rational.Rational(' + coeff.join(',') + ')'
-	// 	}).join(', ') + '})')
-	// })
-
 	// console.log(JSON.stringify(simple))
 	var gb = groebner.normal_strategy(simple)
 	var gb_red = groebner.reduce_groebner(gb)

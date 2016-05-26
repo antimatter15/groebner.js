@@ -28,7 +28,8 @@ exports.filter_zero = filter_zero
 
 function term_div(a, b){
     if(!b) return;
-    if(monomial.divides(a[0], b[0])){
+
+    if(monomial.divides(b[0], a[0])){
         return [monomial.sub(a[0], b[0]), coefficient.div(a[1], b[1])]
     }
 }
@@ -45,6 +46,7 @@ function poly_ring_rem(F, G){
         for(var i = 0; i < G.length; i++){
             var g = G[i];
             var tq = term_div(ltf, leading_term(g))
+
             if(tq){
                 f = poly_sub(f, term_mul(g, tq))
                 found_divisor = true
