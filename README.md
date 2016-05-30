@@ -8,12 +8,6 @@ This implementation is largely based off NZMATH, a python number theory calculat
 
 This project is not a computer algebra system (for instance, it's completely unable to do any sort of symbolic computation), but it's an implementation of one algorithm which is pretty useful. This implementation is entirely self-contained and requires no dependenceis. 
 
-
-# WARNING
-
-THIS IMPLEMENTATION DOESN'T WORK YET. It doesn't work and I've struggled enough with it that I'm just about at the verge of giving up. 
-
-
 # What is a Gröbner basis?
 
 I don't really understand math, so probably all of this is wrong...
