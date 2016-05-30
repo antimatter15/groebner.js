@@ -16,7 +16,7 @@ function leading_term(poly){
 exports.leading_term = leading_term
 
 exports.is_zero = function poly_zero(poly){ 
-    return poly.length == 0 
+    return filter_zero(poly).length == 0 
 }
 
 function filter_zero(x){
@@ -28,7 +28,7 @@ exports.filter_zero = filter_zero
 
 function term_div(a, b){
     if(!b) return;
-
+    
     if(monomial.divides(b[0], a[0])){
         return [monomial.sub(a[0], b[0]), coefficient.div(a[1], b[1])]
     }

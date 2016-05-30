@@ -26,6 +26,9 @@ function reduce_basis(generating){
 		})
 	}
 
+	// console.log('with additional:')
+	// generating.forEach(print_polynomial)
+
 	// format it how groebner.js expects it
 	// as an array of arrays of arrays of arrays
 
@@ -77,7 +80,79 @@ function reduce_basis(generating){
 		})
 	})
 
+	reconstituted.forEach(print_polynomial)
+
 	return reconstituted
+}
+
+
+function check_basis(generating, expression){
+	var variables = [];
+
+	// do initial traversal to fill out variables list
+	// note that it includes expressions which aren't
+	// necessarily plain symbols
+	for(var i = 0; i < generating.length; i++){
+		var polynomial = generating[i];
+
+		polynomial.forEach(term => {
+			var monomial = term[0],
+				coeff = term[1];
+			monomial.forEach(bases => {
+				var expr = bases[0],
+					degree = bases[1];
+				// check if expr exists in variables
+				var index = helper.find_index(expr, variables);
+				if(index == -1){
+					variables.push(expr);
+				}
+			})
+		})
+	}
+
+	var simple = generating.map(polynomial => {
+		return polynomial.map(term => {
+			var monomial = term[0],
+				coeff = term[1];
+
+			// initialize an empty array of same length as variables
+			for(var base = [], i = 0; i < variables.length; i++) 
+				base[i] = 0;
+
+			monomial.forEach(bases => {
+				var expr = bases[0],
+					degree = bases[1],
+					index = helper.find_index(expr, variables);
+				console.assert(typeof degree == 'number')
+				console.assert(index != -1)
+				base[index] = degree;
+			})
+			return [base, helper.rat2grob(coeff)];
+		})
+	})
+
+	var poly = expression.map(term => {
+		var monomial = term[0],
+			coeff = term[1];
+
+		// initialize an empty array of same length as variables
+		for(var base = [], i = 0; i < variables.length; i++) 
+			base[i] = 0;
+
+		monomial.forEach(bases => {
+			var expr = bases[0],
+				degree = bases[1],
+				index = helper.find_index(expr, variables);
+			console.assert(typeof degree == 'number')
+			console.assert(index != -1)
+			base[index] = degree;
+		})
+		return [base, helper.rat2grob(coeff)];
+	})
+
+	// console.log(JSON.stringify(poly))
+	// console.log(JSON.stringify(simple))
+	return groebner.check_polynomial(simple, poly)
 }
 
 function nonzero_polynomial(polynomial){
@@ -129,6 +204,7 @@ function compare_basis(a, b){
 	return true
 }
 
+exports.check_basis = check_basis
 exports.compare_basis = compare_basis
 exports.is_inconsistent = is_inconsistent
 exports.print_polynomial = print_polynomial

@@ -179,6 +179,15 @@ exports.old_reduce_groebner = function old_reduce_groebner(gb){
     return reduced_basis
 }
 
+
+// To see if one polynomial lies in on ideal, divide by the elements
+// in the base and see if the remainder if 0.
+
+exports.check_polynomial = function check_polynomial(G, poly){
+    return polynomial.ring_rem(polynomial.filter_zero(poly), G).length == 0
+}
+
+
 exports.is_reduced = function is_reduced(G){
     // G.sort(key=lambda g: order(g.LM))
     for(var i = 0; i < G.length; i++){
