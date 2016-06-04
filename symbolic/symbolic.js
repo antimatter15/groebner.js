@@ -204,7 +204,9 @@ function compare_basis(a, b){
 	return true
 }
 
+exports.extract_polynomial = helper.extract_polynomial
 exports.check_basis = check_basis
+exports.extract_terms = extract_terms
 exports.compare_basis = compare_basis
 exports.is_inconsistent = is_inconsistent
 exports.print_polynomial = print_polynomial

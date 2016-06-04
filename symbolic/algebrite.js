@@ -79,6 +79,14 @@ function generate_from_expr(expr){
     }else if(head == 'multiply'){
         // [a*b*c] - [a]*[b]*[c] = 0
         return [[ extract_coeff(expr), [[[expr, 1]], NEGONE] ] ]
+    }else if(head == 'sin' || head == 'cos'){
+        // sin(x) or cos(x) adds sin^2 + cos^2 - 1 = 0
+        var arg = A.cadr(expr)
+        return [[
+            [[[A.sin(arg), 2]], ONE], //sin,
+            [[[A.cos(arg), 2]], ONE], // cos
+            [[], NEGONE]
+        ]]
     }
 
     console.log('gen from expr', expr + '')
@@ -110,7 +118,8 @@ function rat2grob(x){
 
 
 function parse_polynomial(str){
-    return extract_terms(A.numerator(A.expand(A.simplify(str))))
+    // return extract_terms(A.numerator(A.expand(A.simplify(str))))
+    return extract_terms(A.simplify(str))
 }
 
 
@@ -122,6 +131,21 @@ function is_equal(a, b){
     return A.equal(a, b)
 }
 
+
+function extract_polynomial(polynomial){
+    return A.add.apply(A, polynomial.map(term => {
+        var monomial = term[0],
+            coeff = term[1];
+        return A.multiply.apply(A, [coeff].concat(monomial.map(bases => {
+            var expr = bases[0],
+                degree = bases[1];
+            return A.power(expr, degree)
+        })))
+    }))
+}
+
+
+exports.extract_polynomial = extract_polynomial
 exports.is_equal = is_equal
 exports.is_zero = is_zero
 exports.rat2grob = rat2grob
